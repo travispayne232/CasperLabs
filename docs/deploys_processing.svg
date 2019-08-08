@@ -12,8 +12,8 @@
 <!-- initialized -->
 <g id="node1" class="node">
 <title>initialized</title>
-<ellipse fill="none" stroke="#000000" cx="84.099" cy="-1567.3887" rx="45.9114" ry="18"/>
-<text text-anchor="middle" x="84.099" y="-1563.1887" font-family="Times,serif" font-size="14.00" fill="#000000">Initialized</text>
+<ellipse fill="none" stroke="#000000" cx="178.099" cy="-1567.3887" rx="45.9114" ry="18"/>
+<text text-anchor="middle" x="178.099" y="-1563.1887" font-family="Times,serif" font-size="14.00" fill="#000000">Initialized</text>
 </g>
 <!-- check_hashes -->
 <g id="node3" class="node">
@@ -24,21 +24,34 @@
 <!-- initialized&#45;&gt;check_hashes -->
 <g id="edge1" class="edge">
 <title>initialized&#45;&gt;check_hashes</title>
-<path fill="none" stroke="#000000" d="M84.099,-1549.1503C84.099,-1537.7484 84.099,-1522.8229 84.099,-1509.8827"/>
-<polygon fill="#000000" stroke="#000000" points="87.5991,-1509.6008 84.099,-1499.6008 80.5991,-1509.6008 87.5991,-1509.6008"/>
-<text text-anchor="middle" x="128.6044" y="-1520.1887" font-family="Times,serif" font-size="14.00" fill="#000000">deploy received</text>
+<path fill="none" stroke="#000000" d="M152.7233,-1552.2894C143.5826,-1546.3128 133.4654,-1539.0429 125.0883,-1531.3887 116.548,-1523.5854 108.2408,-1513.9613 101.3631,-1505.2472"/>
+<polygon fill="#000000" stroke="#000000" points="104.1052,-1503.0713 95.2461,-1497.2603 98.5479,-1507.3276 104.1052,-1503.0713"/>
+<text text-anchor="middle" x="169.6044" y="-1520.1887" font-family="Times,serif" font-size="14.00" fill="#000000">deploy received</text>
+</g>
+<!-- store_deploys_process_results -->
+<g id="node21" class="node">
+<title>store_deploys_process_results</title>
+<polygon fill="none" stroke="#000000" points="356.4549,-1499.3887 185.7432,-1499.3887 185.7432,-1463.3887 356.4549,-1463.3887 356.4549,-1499.3887"/>
+<text text-anchor="middle" x="271.099" y="-1477.1887" font-family="Times,serif" font-size="14.00" fill="#000000">store deploy process results</text>
+</g>
+<!-- initialized&#45;&gt;store_deploys_process_results -->
+<g id="edge32" class="edge">
+<title>initialized&#45;&gt;store_deploys_process_results</title>
+<path fill="none" stroke="#000000" d="M196.0304,-1550.807C209.6046,-1538.2545 228.4818,-1520.7982 243.9101,-1506.5312"/>
+<polygon fill="#000000" stroke="#000000" points="246.6516,-1508.7631 251.6174,-1499.404 241.8991,-1503.6237 246.6516,-1508.7631"/>
+<text text-anchor="middle" x="284.8993" y="-1520.1887" font-family="Times,serif" font-size="14.00" fill="#000000">peer block received</text>
 </g>
 <!-- rejected -->
 <g id="node2" class="node">
 <title>rejected</title>
-<ellipse fill="none" stroke="#000000" cx="180.099" cy="-770.347" rx="41.0834" ry="41.0834"/>
-<text text-anchor="middle" x="180.099" y="-766.147" font-family="Times,serif" font-size="14.00" fill="#000000">Rejected</text>
+<ellipse fill="none" stroke="#000000" cx="179.099" cy="-770.347" rx="41.0834" ry="41.0834"/>
+<text text-anchor="middle" x="179.099" y="-766.147" font-family="Times,serif" font-size="14.00" fill="#000000">Rejected</text>
 </g>
 <!-- check_hashes&#45;&gt;rejected -->
 <g id="edge3" class="edge">
 <title>check_hashes&#45;&gt;rejected</title>
-<path fill="none" stroke="#000000" d="M79.0365,-1464.4288C74.349,-1447.2066 68.099,-1419.6875 68.099,-1395.3887 68.099,-1395.3887 68.099,-1395.3887 68.099,-879.3887 68.099,-840.6102 102.9945,-811.1488 133.8295,-792.6854"/>
-<polygon fill="#000000" stroke="#000000" points="135.8694,-795.5503 142.8047,-787.5408 132.3883,-789.4773 135.8694,-795.5503"/>
+<path fill="none" stroke="#000000" d="M79.0365,-1464.4288C74.349,-1447.2066 68.099,-1419.6875 68.099,-1395.3887 68.099,-1395.3887 68.099,-1395.3887 68.099,-879.3887 68.099,-840.9105 102.463,-811.4934 132.9505,-792.9665"/>
+<polygon fill="#000000" stroke="#000000" points="134.9461,-795.8547 141.8289,-787.8001 131.4254,-789.8045 134.9461,-795.8547"/>
 <text text-anchor="middle" x="75.099" y="-1133.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
 </g>
 <!-- check_signatures -->
@@ -57,8 +70,8 @@
 <!-- check_signatures&#45;&gt;rejected -->
 <g id="edge5" class="edge">
 <title>check_signatures&#45;&gt;rejected</title>
-<path fill="none" stroke="#000000" d="M169.0928,-1382.2488C143.6599,-1368.1541 110.099,-1343.1573 110.099,-1309.3887 110.099,-1309.3887 110.099,-1309.3887 110.099,-879.3887 110.099,-851.7837 126.1827,-825.589 142.9309,-805.7951"/>
-<polygon fill="#000000" stroke="#000000" points="145.5914,-808.0701 149.5997,-798.2627 140.3503,-803.4299 145.5914,-808.0701"/>
+<path fill="none" stroke="#000000" d="M169.0928,-1382.2488C143.6599,-1368.1541 110.099,-1343.1573 110.099,-1309.3887 110.099,-1309.3887 110.099,-1309.3887 110.099,-879.3887 110.099,-851.8982 125.9529,-825.7082 142.4619,-805.8883"/>
+<polygon fill="#000000" stroke="#000000" points="145.1049,-808.1828 149.0354,-798.344 139.8272,-803.5843 145.1049,-808.1828"/>
 <text text-anchor="middle" x="117.099" y="-1090.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
 </g>
 <!-- check_preexistence -->
@@ -72,13 +85,13 @@
 <title>check_signatures&#45;&gt;check_preexistence</title>
 <path fill="none" stroke="#000000" d="M206.3539,-1378.807C213.3263,-1366.3148 223.0096,-1348.9656 230.9513,-1334.7368"/>
 <polygon fill="#000000" stroke="#000000" points="234.0551,-1336.3573 235.8726,-1325.9195 227.9427,-1332.9457 234.0551,-1336.3573"/>
-<text text-anchor="middle" x="233.4301" y="-1348.1887" font-family="Times,serif" font-size="14.00" fill="#000000">yes</text>
+<text text-anchor="middle" x="232.4301" y="-1348.1887" font-family="Times,serif" font-size="14.00" fill="#000000">yes</text>
 </g>
 <!-- check_preexistence&#45;&gt;rejected -->
 <g id="edge7" class="edge">
 <title>check_preexistence&#45;&gt;rejected</title>
-<path fill="none" stroke="#000000" d="M215.9571,-1296.1541C190.001,-1282.1397 156.099,-1257.3373 156.099,-1223.3887 156.099,-1223.3887 156.099,-1223.3887 156.099,-879.3887 156.099,-859.4251 159.9834,-837.8761 164.6268,-819.2484"/>
-<polygon fill="#000000" stroke="#000000" points="168.0282,-820.0754 167.1858,-809.5141 161.2583,-818.2956 168.0282,-820.0754"/>
+<path fill="none" stroke="#000000" d="M215.9571,-1296.1541C190.001,-1282.1397 156.099,-1257.3373 156.099,-1223.3887 156.099,-1223.3887 156.099,-1223.3887 156.099,-879.3887 156.099,-859.4628 159.8216,-837.9211 164.2715,-819.2887"/>
+<polygon fill="#000000" stroke="#000000" points="167.6757,-820.1029 166.7238,-809.5509 160.8876,-818.3934 167.6757,-820.1029"/>
 <text text-anchor="middle" x="165.4301" y="-1047.1887" font-family="Times,serif" font-size="14.00" fill="#000000">yes</text>
 </g>
 <!-- check_session_and_payment_code -->
@@ -92,13 +105,13 @@
 <title>check_preexistence&#45;&gt;check_session_and_payment_code</title>
 <path fill="none" stroke="#000000" d="M248.944,-1291.9853C251.5708,-1280.0955 255.1046,-1264.1004 258.099,-1250.5466"/>
 <polygon fill="#000000" stroke="#000000" points="261.5201,-1251.2858 260.2598,-1240.7662 254.6849,-1249.7757 261.5201,-1251.2858"/>
-<text text-anchor="middle" x="263.099" y="-1262.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
+<text text-anchor="middle" x="262.099" y="-1262.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
 </g>
 <!-- check_session_and_payment_code&#45;&gt;rejected -->
 <g id="edge9" class="edge">
 <title>check_session_and_payment_code&#45;&gt;rejected</title>
-<path fill="none" stroke="#000000" d="M245.797,-1209.399C227.8291,-1193.9327 203.099,-1167.226 203.099,-1137.3887 203.099,-1137.3887 203.099,-1137.3887 203.099,-879.3887 203.099,-859.4628 199.3765,-837.9211 194.9266,-819.2887"/>
-<polygon fill="#000000" stroke="#000000" points="198.3105,-818.3934 192.4743,-809.5509 191.5224,-820.1029 198.3105,-818.3934"/>
+<path fill="none" stroke="#000000" d="M245.797,-1209.399C227.8291,-1193.9327 203.099,-1167.226 203.099,-1137.3887 203.099,-1137.3887 203.099,-1137.3887 203.099,-879.3887 203.099,-859.4251 199.2147,-837.8761 194.5713,-819.2484"/>
+<polygon fill="#000000" stroke="#000000" points="197.9398,-818.2956 192.0123,-809.5141 191.1698,-820.0754 197.9398,-818.2956"/>
 <text text-anchor="middle" x="210.099" y="-1004.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
 </g>
 <!-- check_wasm -->
@@ -169,8 +182,8 @@
 <!-- check_nonce_step_three&#45;&gt;rejected -->
 <g id="edge17" class="edge">
 <title>check_nonce_step_three&#45;&gt;rejected</title>
-<path fill="none" stroke="#000000" d="M330.4725,-866.2357C304.022,-849.3691 257.4769,-819.6886 223.1564,-797.8034"/>
-<polygon fill="#000000" stroke="#000000" points="225.0274,-794.8455 214.7139,-792.4199 221.2637,-800.7476 225.0274,-794.8455"/>
+<path fill="none" stroke="#000000" d="M330.3518,-866.2357C303.7467,-849.3691 256.9294,-819.6886 222.4082,-797.8034"/>
+<polygon fill="#000000" stroke="#000000" points="224.2362,-794.8182 213.9163,-792.4199 220.4881,-800.7303 224.2362,-794.8182"/>
 <text text-anchor="middle" x="297.099" y="-832.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
 </g>
 <!-- check_nonce_step_three&#45;&gt;pending -->
@@ -183,8 +196,8 @@
 <!-- check_wasm&#45;&gt;rejected -->
 <g id="edge11" class="edge">
 <title>check_wasm&#45;&gt;rejected</title>
-<path fill="none" stroke="#000000" d="M296.3273,-1123.5907C276.3298,-1108.472 249.099,-1082.2238 249.099,-1051.3887 249.099,-1051.3887 249.099,-1051.3887 249.099,-879.3887 249.099,-851.8982 233.2452,-825.7082 216.7362,-805.8883"/>
-<polygon fill="#000000" stroke="#000000" points="219.3709,-803.5843 210.1627,-798.344 214.0932,-808.1828 219.3709,-803.5843"/>
+<path fill="none" stroke="#000000" d="M296.3273,-1123.5907C276.3298,-1108.472 249.099,-1082.2238 249.099,-1051.3887 249.099,-1051.3887 249.099,-1051.3887 249.099,-879.3887 249.099,-851.7837 233.0154,-825.589 216.2672,-805.7951"/>
+<polygon fill="#000000" stroke="#000000" points="218.8478,-803.4299 209.5984,-798.2627 213.6067,-808.0701 218.8478,-803.4299"/>
 <text text-anchor="middle" x="256.099" y="-961.1887" font-family="Times,serif" font-size="14.00" fill="#000000">no</text>
 </g>
 <!-- check_wasm&#45;&gt;check_nonce_step_one -->
@@ -218,14 +231,14 @@
 <title>check_ttl&#45;&gt;discarded</title>
 <path fill="none" stroke="#000000" d="M247.9115,-643.4998C246.5619,-632.5139 244.7496,-617.7623 242.9504,-603.1174"/>
 <polygon fill="#000000" stroke="#000000" points="246.4061,-602.5418 241.7127,-593.0432 239.4583,-603.3954 246.4061,-602.5418"/>
-<text text-anchor="middle" x="255.4301" y="-614.1053" font-family="Times,serif" font-size="14.00" fill="#000000">yes</text>
+<text text-anchor="middle" x="254.4301" y="-614.1053" font-family="Times,serif" font-size="14.00" fill="#000000">yes</text>
 </g>
 <!-- pending&#45;&gt;check_ttl -->
 <g id="edge19" class="edge">
 <title>pending&#45;&gt;check_ttl</title>
 <path fill="none" stroke="#000000" d="M421.9603,-764.9925C367.0256,-756.5884 271.4195,-738.4105 250.6401,-711.3053 245.7925,-704.9821 244.3513,-696.766 244.4971,-688.8271"/>
 <polygon fill="#000000" stroke="#000000" points="247.9946,-689.0175 245.4498,-678.7329 241.0255,-688.3597 247.9946,-689.0175"/>
-<text text-anchor="middle" x="294.8285" y="-700.1053" font-family="Times,serif" font-size="14.00" fill="#000000">periodic checks</text>
+<text text-anchor="middle" x="293.8285" y="-700.1053" font-family="Times,serif" font-size="14.00" fill="#000000">periodic checks</text>
 </g>
 <!-- check_computation_result -->
 <g id="node17" class="node">
@@ -277,7 +290,7 @@
 <title>discarded&#45;&gt;deleted</title>
 <path fill="none" stroke="#000000" d="M230.4621,-501.6C230.5203,-490.815 231.7534,-479.5163 235.1987,-469.394 237.9878,-461.1992 242.1929,-453.2193 247.037,-445.7712"/>
 <polygon fill="#000000" stroke="#000000" points="250.1053,-447.491 252.9706,-437.291 244.3698,-443.4779 250.1053,-447.491"/>
-<text text-anchor="middle" x="282.5492" y="-472.194" font-family="Times,serif" font-size="14.00" fill="#000000">periodic cleanup</text>
+<text text-anchor="middle" x="281.5492" y="-472.194" font-family="Times,serif" font-size="14.00" fill="#000000">periodic cleanup</text>
 </g>
 <!-- check_computation_result&#45;&gt;pending -->
 <g id="edge24" class="edge">
