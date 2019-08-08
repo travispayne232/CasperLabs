@@ -24,6 +24,9 @@ import simulacrum.typeclass
   def getPendingOrProcessed(hash: ByteString): F[Option[Deploy]]
 
   def sizePendingOrProcessed(): F[Long]
+
+  /** @return List of blockHashes and processing results */
+  def getProcessingResults(hash: ByteString): F[List[(BlockHash, ProcessedDeploy)]]
 }
 
 class SQLiteDeployStorageReader[F[_]: Bracket[?[_], Throwable]](
@@ -47,6 +50,20 @@ class SQLiteDeployStorageReader[F[_]: Bracket[?[_], Throwable]](
   // Compiler: Cannot find or construct a Read instance for type ...
   private val readDeploy: Read[Deploy] =
     Read[Array[Byte]].map(Deploy.parseFrom)
+  private implicit val readProcessingResult: Read[(ByteString, ProcessedDeploy)] = {
+    Read[(Array[Byte], Long, Option[String])].map {
+      case (blockHash, cost, maybeError) =>
+        (
+          ByteString.copyFrom(blockHash),
+          ProcessedDeploy(
+            deploy = None,
+            cost = cost,
+            isError = maybeError.nonEmpty,
+            errorMessage = maybeError.getOrElse("")
+          )
+        )
+    }
+  }
 
   override def readProcessed: F[List[Deploy]] =
     readByStatus(ProcessedStatusCode)
@@ -98,6 +115,34 @@ class SQLiteDeployStorageReader[F[_]: Bracket[?[_], Throwable]](
       .query[Deploy](readDeploy)
       .option
       .transact(xa)
+
+  override def getProcessingResults(
+      hash: ByteString
+  ): F[List[(ByteString, ProcessedDeploy)]] = {
+    val getDeploy =
+      sql"SELECT data FROM deploys WHERE hash=$hash".query[Deploy](readDeploy).unique.transact(xa)
+
+    val readProcessingResults =
+      sql"""|SELECT block_hash, cost, execution_error_message
+            |FROM deploys_process_results 
+            |WHERE deploy_hash=$hash""".stripMargin
+        .query[(ByteString, ProcessedDeploy)]
+        .to[List]
+        .transact(xa)
+
+    for {
+      blockHashesAndProcessingResults <- readProcessingResults
+      res <- if (blockHashesAndProcessingResults.isEmpty) blockHashesAndProcessingResults.pure[F]
+            else
+              getDeploy.map(
+                d =>
+                  blockHashesAndProcessingResults.map {
+                    case (blockHash, processingResult) =>
+                      (blockHash, processingResult.withDeploy(d))
+                  }
+              )
+    } yield res
+  }
 }
 
 object SQLiteDeployStorageReader {
