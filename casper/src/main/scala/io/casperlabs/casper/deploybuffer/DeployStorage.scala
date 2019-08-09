@@ -74,7 +74,7 @@ import scala.concurrent.duration._
 
   def sizePendingOrProcessed(): F[Long]
 
-  /** @return List of blockHashes and processing results */
+  /** @return List of blockHashes and processing results in descendant order by execution time (block creation timestamp)*/
   def getProcessingResults(hash: ByteString): F[List[(BlockHash, ProcessedDeploy)]]
 }
 
