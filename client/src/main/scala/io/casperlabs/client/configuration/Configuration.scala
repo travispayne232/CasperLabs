@@ -1,6 +1,7 @@
 package io.casperlabs.client.configuration
 import java.io.File
-import java.nio.file.Path
+
+import cats.syntax.option._
 
 final case class ConnectOptions(
     host: String,
@@ -9,7 +10,7 @@ final case class ConnectOptions(
     nodeId: Option[String]
 )
 
-sealed trait Configuration
+sealed trait Configuration extends Product with Serializable
 
 final case class Deploy(
     from: Option[String],
@@ -30,26 +31,26 @@ final case class ShowBlocks(depth: Int)         extends Configuration
 final case class Bond(
     amount: Long,
     nonce: Long,
-    sessionCode: Option[File],
+    maybeSessionCode: Option[File],
     privateKey: File
 ) extends Configuration
 final case class Transfer(
     amount: Long,
     recipientPublicKeyBase64: String,
     nonce: Long,
-    sessionCode: Option[File],
+    maybeSessionCode: Option[File],
     privateKey: File
 ) extends Configuration
 final case class Unbond(
     amount: Option[Long],
     nonce: Long,
-    sessionCode: Option[File],
+    maybeSessionCode: Option[File],
     privateKey: File
 ) extends Configuration
 final case class VisualizeDag(
     depth: Int,
     showJustificationLines: Boolean,
-    out: Option[String],
+    out: Option[File],
     streaming: Option[Streaming]
 ) extends Configuration
 final case class Balance(address: String, blockhash: String) extends Configuration
@@ -67,6 +68,35 @@ final case class Query(
     path: String
 ) extends Configuration
 
+sealed trait KeyManagement extends Configuration
+final case class SetThresholds(
+    keysManagement: Int,
+    deploys: Int,
+    nonce: Long,
+    privateKey: File,
+    maybeSessionCode: Option[File]
+) extends KeyManagement
+final case class AddKey(
+    publicKey: File,
+    weight: Int,
+    nonce: Long,
+    privateKey: File,
+    maybeSessionCode: Option[File]
+) extends KeyManagement
+final case class UpdateKey(
+    publicKey: File,
+    newWeight: Int,
+    nonce: Long,
+    privateKey: File,
+    maybeSessionCode: Option[File]
+) extends KeyManagement
+final case class RemoveKey(
+    publicKey: File,
+    nonce: Long,
+    privateKey: File,
+    maybeSessionCode: Option[File]
+) extends KeyManagement
+
 object Configuration {
   def parse(args: Array[String]): Option[(ConnectOptions, Configuration)] = {
     val options = Options(args)
@@ -76,8 +106,8 @@ object Configuration {
       options.portInternal(),
       options.nodeId.toOption
     )
-    val conf = options.subcommand.map {
-      case options.deploy =>
+    val conf = options.subcommands match {
+      case options.deploy :: Nil =>
         Deploy(
           options.deploy.from.toOption,
           options.deploy.nonce(),
@@ -86,58 +116,59 @@ object Configuration {
           options.deploy.publicKey.toOption,
           options.deploy.privateKey.toOption,
           options.deploy.gasPrice()
-        )
-      case options.propose =>
-        Propose
-      case options.showBlock =>
-        ShowBlock(options.showBlock.hash())
-      case options.showDeploys =>
-        ShowDeploys(options.showDeploys.hash())
-      case options.showDeploy =>
-        ShowDeploy(options.showDeploy.hash())
-      case options.showBlocks =>
-        ShowBlocks(options.showBlocks.depth())
-      case options.unbond =>
+        ).some
+      case options.propose :: Nil =>
+        Propose.some
+      case options.showBlock :: Nil =>
+        ShowBlock(options.showBlock.hash()).some
+      case options.showDeploys :: Nil =>
+        ShowDeploys(options.showDeploys.hash()).some
+      case options.showDeploy :: Nil =>
+        ShowDeploy(options.showDeploy.hash()).some
+      case options.showBlocks :: Nil =>
+        ShowBlocks(options.showBlocks.depth()).some
+      case options.unbond :: Nil =>
         Unbond(
           options.unbond.amount.toOption,
           options.unbond.nonce(),
           options.unbond.session.toOption,
           options.unbond.privateKey()
-        )
-      case options.bond =>
+        ).some
+      case options.bond :: Nil =>
         Bond(
           options.bond.amount(),
           options.bond.nonce(),
           options.bond.session.toOption,
           options.bond.privateKey()
-        )
-      case options.transfer =>
+        ).some
+      case options.transfer :: Nil =>
         Transfer(
           options.transfer.amount(),
           options.transfer.targetAccount(),
           options.transfer.nonce(),
           options.transfer.session.toOption,
           options.transfer.privateKey()
-        )
-      case options.visualizeBlocks =>
+        ).some
+      case options.visualizeBlocks :: Nil =>
         VisualizeDag(
           options.visualizeBlocks.depth(),
           options.visualizeBlocks.showJustificationLines(),
           options.visualizeBlocks.out.toOption,
           options.visualizeBlocks.stream.toOption
-        )
-      case options.query =>
+        ).some
+      case options.query :: Nil =>
         Query(
           options.query.blockHash(),
           options.query.keyType(),
           options.query.key(),
           options.query.path()
-        )
-      case options.balance =>
+        ).some
+      case options.balance :: Nil =>
         Balance(
           options.balance.address(),
           options.balance.blockHash()
-        )
+        ).some
+      case _ => none[Configuration]
     }
     conf map (connect -> _)
   }

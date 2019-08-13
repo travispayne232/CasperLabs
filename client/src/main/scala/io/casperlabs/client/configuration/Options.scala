@@ -292,13 +292,14 @@ final case class Options(arguments: Seq[String]) extends ScallopConf(arguments) 
         default = false.some
       )
 
-    val out = opt[String](
+    val out = opt[File](
       descr =
         s"output image filename, outputs to stdout if not specified, must ends with one of the ${Format
           .values()
           .map(_.name().toLowerCase())
           .mkString(", ")}",
-      validate = s => Format.values().map(_.name().toLowerCase).exists(s.endsWith)
+      validate = file =>
+        fileCheck(file) && Format.values().map(_.name().toLowerCase).exists(file.getName.endsWith)
     )
 
     val stream =

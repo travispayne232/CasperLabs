@@ -3,16 +3,6 @@
 CasperLabs Client API library and command line tool.
 """
 
-# Hack to fix the relative imports problems #
-import sys
-from pathlib import Path
-
-file = Path(__file__).resolve()
-parent, root = file.parent, file.parents[1]
-sys.path.append(str(root))
-
-# end of hack #
-
 import time
 import argparse
 import grpc
@@ -25,11 +15,26 @@ import struct
 import json
 from operator import add
 from functools import reduce
+import google.protobuf.text_format
+
+# Hack to fix the relative imports problems #
+import sys
+from pathlib import Path
+
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
+# Additionally remove the current file's directory from sys.path
+try:
+    sys.path.remove(str(parent))
+except ValueError:  # Already removed
+    pass
+
+# end of hack #
 
 # Monkey patching of google.protobuf.text_encoding.CEscape
 # to get keys and signatures in hex when printed
-import google.protobuf.text_format
-
 CEscape = google.protobuf.text_format.text_encoding.CEscape
 
 
@@ -38,6 +43,7 @@ def _hex(text, as_utf8):
 
 
 google.protobuf.text_format.text_encoding.CEscape = _hex
+
 
 # ~/CasperLabs/protobuf/io/casperlabs/node/api/control.proto
 from .control_pb2_grpc import ControlServiceStub
@@ -139,6 +145,13 @@ class InternalError(Exception):
         return f"{self.status}: {self.details}"
 
 
+def _get_view(full_view: bool):
+    if full_view:
+        return info.BlockInfo.View.FULL
+    else:
+        return info.BlockInfo.View.BASIC
+
+
 def api(function):
     """
     Decorator of API functions that protects user code from
@@ -215,7 +228,10 @@ class CasperLabsClient:
                             self.serviceStub(channel), name[: -len("_stream")]
                         )(*args)
 
-                return name.endswith("_stream") and g or f
+                if name.endswith("_stream"):
+                    return g
+                else:
+                    return f
 
         self.casperService = GRPCService(self.port, CasperServiceStub)
         self.controlService = GRPCService(self.internal_port, ControlServiceStub)
@@ -253,7 +269,8 @@ class CasperLabsClient:
         :return:              Tuple: (deserialized DeployServiceResponse object, deploy_hash)
         """
 
-        payment = payment or session
+        if not payment:
+            payment = session
 
         def hash(data: bytes) -> bytes:
             h = blake2b(digest_size=32)
@@ -270,7 +287,10 @@ class CasperLabsClient:
                     0
                 ].strip()
                 r = base64.b64decode(s)
-                return len(r) % 32 == 0 and r[:32] or r[-32:]
+                if len(r) % 32 == 0:
+                    return r[:32]
+                else:
+                    return r[-32:]
 
         def read_code(file_name: str, abi_encoded_args: bytes = None):
             return consensus.Deploy.Code(
@@ -278,22 +298,31 @@ class CasperLabsClient:
             )
 
         def sign(data: bytes):
-            return private_key and consensus.Signature(
-                sig_algorithm="ed25519",
-                sig=ed25519.SigningKey(read_pem_key(private_key)).sign(data),
-            )
+            if private_key:
+                return consensus.Signature(
+                    sig_algorithm="ed25519",
+                    sig=ed25519.SigningKey(read_pem_key(private_key)).sign(data),
+                )
 
         def serialize(o) -> bytes:
             return o.SerializeToString()
 
         # args must go to payment as well for now cause otherwise we'll get GASLIMIT error:
         # https://github.com/CasperLabs/CasperLabs/blob/dev/casper/src/main/scala/io/casperlabs/casper/util/ProtoUtil.scala#L463
+        payment_args = args if payment == session else None
         body = consensus.Deploy.Body(
-            session=read_code(session, args),
-            payment=read_code(payment, payment == session and args or None),
+            session=read_code(session, args), payment=read_code(payment, payment_args)
         )
 
-        account_public_key = public_key and read_pem_key(public_key)
+        approval_public_key = None
+        if public_key:
+            approval_public_key = read_pem_key(public_key)
+
+        if from_addr is None:
+            account_public_key = approval_public_key
+        else:
+            account_public_key = from_addr
+
         header = consensus.Deploy.Header(
             account_public_key=account_public_key,
             nonce=nonce,
@@ -303,17 +332,15 @@ class CasperLabsClient:
         )
 
         deploy_hash = hash(serialize(header))
-        d = consensus.Deploy(
-            deploy_hash=deploy_hash,
-            approvals=[
+        approvals = []
+        if approval_public_key:
+            approvals.append(
                 consensus.Approval(
-                    approver_public_key=account_public_key, signature=sign(deploy_hash)
+                    approver_public_key=approval_public_key, signature=sign(deploy_hash)
                 )
-            ]
-            if account_public_key
-            else [],
-            header=header,
-            body=body,
+            )
+        d = consensus.Deploy(
+            deploy_hash=deploy_hash, approvals=approvals, header=header, body=body
         )
 
         # TODO: Deploy returns Empty, error handing via exceptions, apparently,
@@ -333,11 +360,7 @@ class CasperLabsClient:
         """
         yield from self.casperService.StreamBlockInfos_stream(
             casper.StreamBlockInfosRequest(
-                depth=depth,
-                max_rank=max_rank,
-                view=(
-                    full_view and info.BlockInfo.View.FULL or info.BlockInfo.View.BASIC
-                ),
+                depth=depth, max_rank=max_rank, view=_get_view(full_view)
             )
         )
 
@@ -352,10 +375,7 @@ class CasperLabsClient:
         """
         return self.casperService.GetBlockInfo(
             casper.GetBlockInfoRequest(
-                block_hash_base16=block_hash_base16,
-                view=(
-                    full_view and info.BlockInfo.View.FULL or info.BlockInfo.View.BASIC
-                ),
+                block_hash_base16=block_hash_base16, view=_get_view(full_view)
             )
         )
 
@@ -461,12 +481,7 @@ class CasperLabsClient:
         """
         return self.casperService.GetDeployInfo(
             casper.GetDeployInfoRequest(
-                deploy_hash_base16=deploy_hash_base16,
-                view=(
-                    full_view
-                    and info.DeployInfo.View.FULL
-                    or info.DeployInfo.View.BASIC
-                ),
+                deploy_hash_base16=deploy_hash_base16, view=_get_view(full_view)
             )
         )
 
@@ -477,12 +492,7 @@ class CasperLabsClient:
         """
         yield from self.casperService.StreamBlockDeploys_stream(
             casper.StreamBlockDeploysRequest(
-                block_hash_base16=block_hash_base16,
-                view=(
-                    full_view
-                    and info.DeployInfo.View.FULL
-                    or info.DeployInfo.View.BASIC
-                ),
+                block_hash_base16=block_hash_base16, view=_get_view(full_view)
             )
         )
 
